@@ -39,6 +39,11 @@ public class CompoundInterestModel {
     @Column(name = "interestRate")
     private double interestRate;
 
+    /**
+     * finalCapital - the final Capital
+     */
+    @Column(name = "finalCapital")
+    private double finalCapital;
 
     /**
      * Constructor without parameters
@@ -59,7 +64,7 @@ public class CompoundInterestModel {
         this.initialCapital = initialCapital;
         this.period = period;
         this.interestRate = interestRate;
-
+        this.finalCapital = initialCapital + (initialCapital * (interestRate/100) * period);
     }
 
     //### Getter ###
@@ -69,7 +74,7 @@ public class CompoundInterestModel {
      *
      * @return the id for Database
      */
-    public double getId() {
+    public int getId() {
         return id;
     }
 
@@ -109,6 +114,9 @@ public class CompoundInterestModel {
      *
      * @return the final Capital
      */
+    public double getFinalCapital() {
+        return finalCapital;
+    }
 
     //### Setter ###
     /**
@@ -140,6 +148,17 @@ public class CompoundInterestModel {
     public void setInterestRate(double interestRate) {
         this.interestRate = interestRate;
     }
+
+    /**
+     * setFinalCapital
+     * Setter for finalCapital
+     *
+     * @param finalCapital - the final capital
+     */
+    public void setFinalCapital(double finalCapital) {
+        this.finalCapital = finalCapital;
+    }
+
 
 
 }

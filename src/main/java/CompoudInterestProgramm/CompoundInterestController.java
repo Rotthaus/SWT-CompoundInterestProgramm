@@ -78,6 +78,7 @@ public class CompoundInterestController {
                             compoundInterest.getInitialCapital(),
                             compoundInterest.getPeriod(),
                             compoundInterest.getInterestRate()));
+                            compoundInterest.getFinalCapital();
             return new ResponseEntity<>(_compoundInterest, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
