@@ -1,13 +1,8 @@
-package CompoudInterestProgramm.controller;
+package CompoudInterestProgramm;
 
-import CompoudInterestProgramm.repository.CompoundInterestInterface;
-import CompoudInterestProgramm.model.CompoundInterestModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,7 +21,8 @@ public class CompoundInterestController {
     /**
      * repository connects to Interface
      */
-    CompoundInterestInterface repository;
+    @Autowired
+    CompoundInterestRepository compoundInterestRepository;
 
     /**
      * Get method to retrieve data from server
@@ -38,7 +34,7 @@ public class CompoundInterestController {
         try {
             List<CompoundInterestModel> entry = new ArrayList<CompoundInterestModel>();
 
-            repository.findAll().forEach(entry::add);
+            compoundInterestRepository.findAll().forEach(entry::add);
 
             if (entry.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -46,6 +42,7 @@ public class CompoundInterestController {
 
             return new ResponseEntity<>(entry, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -57,8 +54,8 @@ public class CompoundInterestController {
      * @return ResponseEntity
      */
     @GetMapping("/getCi/{id}")
-    public ResponseEntity<CompoundInterestModel> setCompoundInterestById(@PathVariable("id") double id) {
-        Optional<CompoundInterestModel> tutorialData = repository.findById(id);
+    public ResponseEntity<CompoundInterestModel> setCompoundInterestById(@PathVariable("id") int id) {
+        Optional<CompoundInterestModel> tutorialData = compoundInterestRepository.findById(id);
 
         if (tutorialData.isPresent()) {
             return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
@@ -74,17 +71,17 @@ public class CompoundInterestController {
      * @return ResponseEntity
      */
     @PostMapping("/setCi")
-    public ResponseEntity<CompoundInterestModel> setCompoundInterest(@RequestBody CompoundInterestModel compoundInterest) {
+    public ResponseEntity<CompoundInterestModel> setCompoundInterest( CompoundInterestModel compoundInterest) {
         try {
-            CompoundInterestModel _compoundInterest = repository.save(
+            CompoundInterestModel _compoundInterest = compoundInterestRepository.save(
                     new CompoundInterestModel(
                             compoundInterest.getInitialCapital(),
                             compoundInterest.getPeriod(),
-                            compoundInterest.getInterestRate(),
-                            compoundInterest.getFinalCapital()));
+                            compoundInterest.getInterestRate()));
             return new ResponseEntity<>(_compoundInterest, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

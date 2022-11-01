@@ -1,4 +1,4 @@
-package CompoudInterestProgramm.model;
+package CompoudInterestProgramm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class CompoundInterestModel {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private double id;
+    private int id;
 
     /**
      * initialCapital - the initial capital
@@ -39,11 +39,6 @@ public class CompoundInterestModel {
     @Column(name = "interestRate")
     private double interestRate;
 
-    /**
-     * finalCapital - the final value after specific duration
-     */
-    @Column(name = "finalCapital")
-    private double finalCapital;
 
     /**
      * Constructor without parameters
@@ -58,14 +53,12 @@ public class CompoundInterestModel {
      * @param initialCapital - initial capital
      * @param period - period
      * @param interestRate - interest rate
-     * @param finalCapital - final capital
      */
     public CompoundInterestModel(double initialCapital, double period,
-                                  double interestRate, double finalCapital) {
+                                  double interestRate) {
         this.initialCapital = initialCapital;
         this.period = period;
         this.interestRate = interestRate;
-        this.finalCapital = finalCapital;
 
     }
 
@@ -116,9 +109,6 @@ public class CompoundInterestModel {
      *
      * @return the final Capital
      */
-    public double getFinalCapital() {
-        return finalCapital;
-    }
 
     //### Setter ###
     /**
@@ -151,14 +141,5 @@ public class CompoundInterestModel {
         this.interestRate = interestRate;
     }
 
-    /**
-     * setFinalCapital
-     * Setter for final Capital
-     *
-     * @param finalCapital - the final capital
-     */
-    public void setFinalCapital(double finalCapital) {
-        this.finalCapital = finalCapital;
-    }
 
 }
