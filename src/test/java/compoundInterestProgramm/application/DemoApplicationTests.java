@@ -1,4 +1,4 @@
-package CompoudInterestProgramm.application;
+package compoundInterestProgramm.application;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

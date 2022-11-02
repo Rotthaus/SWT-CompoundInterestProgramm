@@ -1,6 +1,5 @@
-package CompoudInterestProgramm;
+package compoundInterestProgramm;
 
-import CompoudInterestProgramm.CompoundInterestModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

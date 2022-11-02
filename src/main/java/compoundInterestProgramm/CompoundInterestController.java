@@ -1,5 +1,7 @@
-package CompoudInterestProgramm;
+package compoundInterestProgramm;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api")
+@Api(value = "Customer Related APIs")
 public class CompoundInterestController {
 
     /**
@@ -30,6 +33,7 @@ public class CompoundInterestController {
      * @return ResponseEntity
      */
     @GetMapping("/getCi")
+    @ApiOperation(value = "Returns all Data from database")
     public ResponseEntity<List<CompoundInterestModel>> getCompoundInterest() {
         try {
             List<CompoundInterestModel> entry = new ArrayList<CompoundInterestModel>();
@@ -54,6 +58,7 @@ public class CompoundInterestController {
      * @return ResponseEntity
      */
     @GetMapping("/getCi/{id}")
+    @ApiOperation(value = "Returns Data for a specific id from database")
     public ResponseEntity<CompoundInterestModel> setCompoundInterestById(@PathVariable("id") int id) {
         Optional<CompoundInterestModel> tutorialData = compoundInterestRepository.findById(id);
 
@@ -71,6 +76,7 @@ public class CompoundInterestController {
      * @return ResponseEntity
      */
     @PostMapping("/setCi")
+    @ApiOperation(value = "Add a data record to the database")
     public ResponseEntity<CompoundInterestModel> setCompoundInterest( CompoundInterestModel compoundInterest) {
         try {
             CompoundInterestModel _compoundInterest = compoundInterestRepository.save(
@@ -78,7 +84,6 @@ public class CompoundInterestController {
                             compoundInterest.getInitialCapital(),
                             compoundInterest.getPeriod(),
                             compoundInterest.getInterestRate()));
-                            compoundInterest.getFinalCapital();
             return new ResponseEntity<>(_compoundInterest, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

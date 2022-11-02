@@ -1,22 +1,28 @@
-package CompoudInterestProgramm;
+package compoundInterestProgramm;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.beans.factory.annotation.Required;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.*;
 
 /**
  * Class CompoundInterest_Model generates the properties and methods
  */
+
 @Entity
 @Table(name = "compoundInterest")
+@Hidden
 public class CompoundInterestModel {
 
     //### Properties ###
     /**
      * id - key for the datatable
      */
+    @ApiParam( hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -42,8 +48,10 @@ public class CompoundInterestModel {
     /**
      * finalCapital - the final Capital
      */
+    @ApiParam( hidden = true)
     @Column(name = "finalCapital")
     private double finalCapital;
+
 
     /**
      * Constructor without parameters
