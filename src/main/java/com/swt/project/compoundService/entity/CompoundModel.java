@@ -1,11 +1,7 @@
-package compoundInterestProgramm;
+package com.swt.project.compoundService.entity;
 
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.springframework.beans.factory.annotation.Required;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.*;
 
@@ -16,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "compoundInterest")
 @Hidden
-public class CompoundInterestModel {
+public class CompoundModel {
 
     //### Properties ###
     /**
@@ -25,7 +21,7 @@ public class CompoundInterestModel {
     @ApiParam( hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     /**
      * initialCapital - the initial capital
@@ -48,16 +44,30 @@ public class CompoundInterestModel {
     /**
      * finalCapital - the final Capital
      */
-    @ApiParam( hidden = true)
     @Column(name = "finalCapital")
     private double finalCapital;
 
 
     /**
+     * calculatedComponent - the calculated component
+     */
+    @ApiParam( hidden = true)
+    @Column(name = "calculatedComponent")
+    private String calculatedComponent;
+
+
+    /**
+     * idUser - the id of the user
+     */
+    @ApiParam( hidden = true)
+    @Column(name = "idUser")
+    private long idUser;
+
+    /**
      * Constructor without parameters
      */
     //### Constructor ###
-    public CompoundInterestModel() {
+    public CompoundModel() {
 
     }
 
@@ -66,14 +76,19 @@ public class CompoundInterestModel {
      * @param initialCapital - initial capital
      * @param period - period
      * @param interestRate - interest rate
+     * @param finalCapital - final capital
+     * @param calculatedComponent - calculation component
      */
-    public CompoundInterestModel(double initialCapital, double period,
-                                  double interestRate) {
+    public CompoundModel(long idUser, double initialCapital, double period,
+                         double interestRate, double finalCapital, String calculatedComponent) {
+        this.idUser = idUser;
         this.initialCapital = initialCapital;
         this.period = period;
         this.interestRate = interestRate;
-        this.finalCapital = initialCapital + (initialCapital * (interestRate/100) * period);
+        this.finalCapital = finalCapital;
+        this.calculatedComponent = calculatedComponent;
     }
+
 
     //### Getter ###
     /**
@@ -82,7 +97,7 @@ public class CompoundInterestModel {
      *
      * @return the id for Database
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -116,6 +131,10 @@ public class CompoundInterestModel {
         return interestRate;
     }
 
+    public long getIdUser() {
+        return idUser;
+    }
+
     /**
      * getFinalCapital
      * Getter for final Capital
@@ -126,6 +145,9 @@ public class CompoundInterestModel {
         return finalCapital;
     }
 
+    public String getCalculatedComponent() {
+        return calculatedComponent;
+    }
     //### Setter ###
     /**
      * setInitialCapital
@@ -168,5 +190,11 @@ public class CompoundInterestModel {
     }
 
 
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
 
+    public void setCalculatedComponent(String calculatedComponent) {
+        this.calculatedComponent = calculatedComponent;
+    }
 }

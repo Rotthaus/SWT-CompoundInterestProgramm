@@ -1,5 +1,4 @@
-package compoundInterestProgramm;
-
+package com.swt.project.compoundService.documentation;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +27,13 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "My REST API",
-                "Some custom description of API.",
-                "API TOS",
-                "Terms of service",
-                new Contact("John Doe", "www.example.com", "myeaddress@company.com"),
-                "License of API",
-                "API license URL",
+                "Zinsrechner API",
+                "SWT-Projekt",
+                "1.0",
+                null,
+                new Contact("SWT", null, null),
+                null,
+                null,
                 Collections.emptyList());
     }
 
