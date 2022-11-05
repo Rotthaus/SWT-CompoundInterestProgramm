@@ -65,7 +65,7 @@ public class CompoundController {
     }
 
     /**
-     * Post method to calc data
+     * Post method to calculate data
      *
      * @param compoundInterest - parameter from type compoundInterest
      * @return ResponseEntity
