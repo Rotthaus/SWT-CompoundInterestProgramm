@@ -105,7 +105,7 @@ public class CompoundController {
     }
 
     /**
-     * Post method to save data to the server
+     * Post method to save data to the database
      *
      * @param compoundInterest - parameter from type compoundInterest
      * @return ResponseEntity
