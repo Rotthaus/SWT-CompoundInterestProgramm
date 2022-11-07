@@ -1,6 +1,7 @@
 package com.swt.project.authService.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.swt.project.compoundService.entity.CompoundModel;
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,4 +29,6 @@ public class Users {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @OneToMany(mappedBy = "idUser", cascade = CascadeType.REMOVE)
+    private List<CompoundModel> userIDs;
 }

@@ -60,7 +60,8 @@ public class CompoundModel {
      * idUser - the id of the user
      */
     @ApiParam( hidden = true)
-    @Column(name = "idUser")
+    //@ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn (name = "idUser")
     private long idUser;
 
     /**

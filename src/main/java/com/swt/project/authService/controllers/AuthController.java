@@ -69,5 +69,4 @@ public class AuthController {
             return new ResponseEntity<>("Invalid Login Credentials", HttpStatus.BAD_REQUEST);
         }
     }
-
 }
