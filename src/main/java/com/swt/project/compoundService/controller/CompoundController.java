@@ -5,10 +5,6 @@ import com.swt.project.compoundService.entity.CompoundModel;
 import com.swt.project.authService.repository.UserRepo;
 import com.swt.project.compoundService.services.CompoundService;
 import io.swagger.annotations.*;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,10 +20,9 @@ import java.util.Optional;
  * Class CompoundInterestController provides http request
  */
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api/compound")
-@Api(value = "Customer Related APIs")
 public class CompoundController {
 
     @Autowired
@@ -47,7 +42,6 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @GetMapping("/getData")
-    @ApiOperation(value = "returns all Data for a the user from database")
     public ResponseEntity<List<CompoundModel>> getCompoundInterest() {
         try {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -71,7 +65,6 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping("/calcData")
-    @ApiOperation(value = "calculate a data record")
     public ResponseEntity<CompoundModel> calc(CompoundModel compoundInterest) {
 
         if(compoundService.validateDataForCalc(compoundInterest)) {
@@ -111,7 +104,6 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping("/saveData")
-    @ApiOperation(value = "save data to the server")
     public ResponseEntity<CompoundModel> saveDataRecord(@ModelAttribute CompoundModel compoundInterest) {
         if(compoundService.validateDataForSave(compoundInterest)) {
             try {
@@ -137,7 +129,6 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping(value = "/deleteData")
-    @ApiOperation(value = "delete a data record from the server")
     public ResponseEntity<List<CompoundModel>> deleteCompoundInterest(long id) {
             if (compoundService.checkUser(id, compoundInterestRepository, userRepo)) {
                 try {

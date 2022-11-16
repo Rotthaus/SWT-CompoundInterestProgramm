@@ -30,8 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeHttpRequests()
+                .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/h2-console/**").hasRole("ADMIN")
                 .antMatchers("/api/user/**").hasRole("USER")
                 .antMatchers("/api/compound/calcData/**").permitAll()
                 .antMatchers("/api/compound/**").hasRole("USER")
@@ -60,4 +61,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/swagger.yaml",
+            "/v2/api-docs",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
 }

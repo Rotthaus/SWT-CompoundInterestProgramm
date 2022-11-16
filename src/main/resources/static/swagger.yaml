@@ -1,0 +1,268 @@
+swagger: '2.0'
+info:
+  description: backend
+  version: '1.0'
+  title: Compound Calculator
+  termsOfService: urn:tos
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0
+host: lr-server.online:8081
+basePath: /
+tags:
+  - name: auth-controller
+    description: Auth Controller
+  - name: compound-controller
+    description: Compound Controller
+  - name: user-controller
+    description: User Controller
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - auth-controller
+      summary: returns an access token for a specific user from server
+      operationId: loginHandlerUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: email
+          in: query
+          required: false
+          type: string
+        - name: password
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/auth/register:
+    post:
+      tags:
+        - auth-controller
+      summary: adds a user to the database
+      operationId: registerHandlerUsingPOST
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - '*/*'
+      parameters:
+        - name: email
+          in: formData
+          required: false
+          type: string
+        - name: password
+          in: formData
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/compound/calcData:
+    post:
+      tags:
+        - compound-controller
+      summary: calculate a data record
+      operationId: calcUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: finalCapital
+          in: query
+          required: false
+          type: number
+          format: double
+        - name: initialCapital
+          in: query
+          required: false
+          type: number
+          format: double
+        - name: interestRate
+          in: query
+          required: false
+          type: number
+          format: double
+        - name: period
+          in: query
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/compound/deleteData:
+    post:
+      tags:
+        - compound-controller
+      summary: delete a data record from the server
+      operationId: deleteCompoundInterestUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: query
+          description: id
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/compound/getData:
+    get:
+      tags:
+        - compound-controller
+      summary: returns all Data for a the user from database
+      operationId: getCompoundInterestUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/compound/saveData:
+    post:
+      tags:
+        - compound-controller
+      summary: save data to the server
+      operationId: saveDataRecordUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: finalCapital
+          in: query
+          required: false
+          type: number
+          format: double
+        - name: initialCapital
+          in: query
+          required: false
+          type: number
+          format: double
+        - name: interestRate
+          in: query
+          required: false
+          type: number
+          format: double
+        - name: period
+          in: query
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/user/deleteUser:
+    post:
+      tags:
+        - user-controller
+      summary: deletes a user
+      operationId: deleteUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: password
+          description: password
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /api/user/info:
+    get:
+      tags:
+        - user-controller
+      summary: returns details for a specific user
+      operationId: getUserDetailsUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
