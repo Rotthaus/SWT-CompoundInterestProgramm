@@ -1,4 +1,4 @@
-package com.swt.project.documentationService.documentationConfig;
+package com.swt.project.compoundService.documentationService.documentationConfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

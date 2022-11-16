@@ -29,6 +29,10 @@ public class Users {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Enumerated
+    @Column(name = "user_role")
+    private UserRole userRole;
+
     @OneToMany(mappedBy = "idUser", cascade = CascadeType.REMOVE)
     private List<CompoundModel> userIDs;
 }
