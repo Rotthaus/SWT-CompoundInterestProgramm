@@ -1,7 +1,6 @@
 package com.swt.project.compoundService.entity;
 
 import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.Hidden;
 
 import javax.persistence.*;
 
@@ -11,14 +10,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "compoundInterest")
-@Hidden
 public class CompoundModel {
 
     //### Properties ###
     /**
      * id - key for the datatable
      */
-    @ApiParam( hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -51,7 +48,6 @@ public class CompoundModel {
     /**
      * calculatedComponent - the calculated component
      */
-    @ApiParam( hidden = true)
     @Column(name = "calculatedComponent")
     private String calculatedComponent;
 
@@ -59,7 +55,6 @@ public class CompoundModel {
     /**
      * idUser - the id of the user
      */
-    @ApiParam( hidden = true)
     //@ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn (name = "idUser")
     private long idUser;
