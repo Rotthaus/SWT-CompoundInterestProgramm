@@ -88,7 +88,7 @@ paths:
     post:
       tags:
         - compound-controller
-      summary: calculate a data record
+      summary: calculate a data record - requires no authentication
       operationId: calcUsingPOST
       consumes:
         - application/json
