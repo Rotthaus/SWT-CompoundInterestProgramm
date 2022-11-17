@@ -1,5 +1,6 @@
 package com.swt.project.authService.controllers;
 
+import com.swt.project.authService.entity.UserRole;
 import com.swt.project.authService.entity.Users;
 import com.swt.project.authService.models.LoginCredentials;
 import com.swt.project.authService.repository.UserRepo;
@@ -40,6 +41,7 @@ public class AuthController {
         try {
             String encodedPass = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPass);
+            user.setUserRole(UserRole.USER);
             user = userRepo.save(user);
             String token = jwtUtil.generateToken(user.getEmail());
             return ResponseEntity.ok(Collections.singletonMap("jwt-token", token));

@@ -34,5 +34,5 @@ public class Users {
     private UserRole userRole;
 
     @OneToMany(mappedBy = "idUser", cascade = CascadeType.REMOVE)
-    private List<CompoundModel> userIDs;
+    private List<CompoundModel> entries;
 }

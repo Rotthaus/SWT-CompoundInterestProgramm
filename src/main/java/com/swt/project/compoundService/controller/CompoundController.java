@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,22 +73,22 @@ public class CompoundController {
         if(compoundService.validateDataForCalc(compoundInterest)) {
             if (compoundInterest.getInitialCapital() == 0) {
                 compoundInterest.setInitialCapital(calcInitialCapital(compoundInterest));
-                compoundInterest.setCalculatedComponent("initial capital");
+                //compoundInterest.setCalculatedComponent("initial capital");
             }
 
             if (compoundInterest.getInterestRate() == 0) {
                 compoundInterest.setInterestRate(calcInterestRate(compoundInterest));
-                compoundInterest.setCalculatedComponent("interest rate");
+                //compoundInterest.setCalculatedComponent("interest rate");
             }
 
             if (compoundInterest.getPeriod() == 0) {
                 compoundInterest.setPeriod(calcPeriod(compoundInterest));
-                compoundInterest.setCalculatedComponent("period");
+                //compoundInterest.setCalculatedComponent("period");
             }
 
             if (compoundInterest.getFinalCapital() == 0) {
                 compoundInterest.setFinalCapital(calcFinalCapital(compoundInterest));
-                compoundInterest.setCalculatedComponent("final capital");
+                //compoundInterest.setCalculatedComponent("final capital");
             }
 
             try {
@@ -107,6 +110,7 @@ public class CompoundController {
     public ResponseEntity<CompoundModel> saveDataRecord(@ModelAttribute CompoundModel compoundInterest) {
         if(compoundService.validateDataForSave(compoundInterest)) {
             try {
+                compoundInterest.setDate(LocalDate.now().toString());
                 CompoundModel _compoundInterest =
                         compoundInterestRepository.save(new CompoundModel(
                                 userRepo.findByEmail(compoundService.returnUserFromAccessToken()).get().getId(),
@@ -114,7 +118,7 @@ public class CompoundController {
                                 compoundInterest.getPeriod(),
                                 compoundInterest.getInterestRate(),
                                 compoundInterest.getFinalCapital(),
-                                compoundInterest.getCalculatedComponent()));
+                                compoundInterest.getDate()));
                 return new ResponseEntity<>(_compoundInterest, HttpStatus.CREATED);
             } catch (Exception e) {
                 return new ResponseEntity("data cant saved", HttpStatus.INTERNAL_SERVER_ERROR);

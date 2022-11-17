@@ -44,13 +44,11 @@ public class CompoundModel {
     @Column(name = "finalCapital")
     private double finalCapital;
 
-
     /**
-     * calculatedComponent - the calculated component
+     * date - the creation date
      */
-    @Column(name = "calculatedComponent")
-    private String calculatedComponent;
-
+    @Column(name = "date")
+    private String date;
 
     /**
      * idUser - the id of the user
@@ -58,6 +56,8 @@ public class CompoundModel {
     //@ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn (name = "idUser")
     private long idUser;
+
+
 
     /**
      * Constructor without parameters
@@ -73,16 +73,15 @@ public class CompoundModel {
      * @param period - period
      * @param interestRate - interest rate
      * @param finalCapital - final capital
-     * @param calculatedComponent - calculation component
      */
     public CompoundModel(long idUser, double initialCapital, double period,
-                         double interestRate, double finalCapital, String calculatedComponent) {
+                         double interestRate, double finalCapital, String date) {
         this.idUser = idUser;
         this.initialCapital = initialCapital;
         this.period = period;
         this.interestRate = interestRate;
         this.finalCapital = finalCapital;
-        this.calculatedComponent = calculatedComponent;
+        this.date = date;
     }
 
 
@@ -141,9 +140,6 @@ public class CompoundModel {
         return finalCapital;
     }
 
-    public String getCalculatedComponent() {
-        return calculatedComponent;
-    }
     //### Setter ###
     /**
      * setInitialCapital
@@ -190,7 +186,11 @@ public class CompoundModel {
         this.idUser = idUser;
     }
 
-    public void setCalculatedComponent(String calculatedComponent) {
-        this.calculatedComponent = calculatedComponent;
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
