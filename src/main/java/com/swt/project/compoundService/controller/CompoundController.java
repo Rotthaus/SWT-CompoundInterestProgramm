@@ -68,7 +68,7 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping("/calcData")
-    public ResponseEntity<CompoundModel> calc(CompoundModel compoundInterest) {
+    public ResponseEntity<CompoundModel> calc(@RequestBody CompoundModel compoundInterest) {
 
         if(compoundService.validateDataForCalc(compoundInterest)) {
             if (compoundInterest.getInitialCapital() == 0) {

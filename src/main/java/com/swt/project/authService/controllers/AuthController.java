@@ -6,6 +6,7 @@ import com.swt.project.authService.models.LoginCredentials;
 import com.swt.project.authService.repository.UserRepo;
 import com.swt.project.authService.security.JWTUtil;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,8 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
+@CrossOrigin
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -35,9 +38,12 @@ public class AuthController {
      *
      * @return ResponseEntity
      */
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/register")
     @ApiOperation(value = "adds a user to the database")
-    public ResponseEntity<?> registerHandler(@ModelAttribute Users user){
+    public ResponseEntity<?> registerHandler(@RequestBody Users user){
+        if(userRepo.existsByEmail(user.getEmail())){
+            return new ResponseEntity<>("E-mail already exist", HttpStatus.BAD_REQUEST);
+        }
         try {
             String encodedPass = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPass);
@@ -57,7 +63,8 @@ public class AuthController {
      */
     @PostMapping("/login")
     @ApiOperation(value = "returns an access token for a specific user from server")
-    public  ResponseEntity<?> loginHandler(@ModelAttribute LoginCredentials body){
+    public  ResponseEntity<?> loginHandler(@RequestBody LoginCredentials body){
+        log.info(body.getEmail());
         try {
             UsernamePasswordAuthenticationToken authInputToken =
                     new UsernamePasswordAuthenticationToken(body.getEmail(), body.getPassword());
