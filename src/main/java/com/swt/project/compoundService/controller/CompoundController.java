@@ -23,7 +23,7 @@ import java.util.Optional;
  * Class CompoundInterestController provides http request
  */
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin
 @RestController
 @RequestMapping("/api/compound")
 public class CompoundController {
