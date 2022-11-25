@@ -81,8 +81,12 @@ public class AuthController {
             String token = jwtUtil.generateToken(body.getEmail());
 
             Optional<Users> user = userRepo.findByEmail(body.getEmail());
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.get().getId());
-            return new ResponseEntity<>(new AuthResponseDTO(token,refreshToken.getToken()),HttpStatus.OK);
+            if (user.isPresent()) {
+                RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.get().getId());
+                return new ResponseEntity<>(new AuthResponseDTO(token, refreshToken.getToken()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("user is not present", HttpStatus.BAD_REQUEST);
+            }
            // return ResponseEntity.ok(Collections.singletonMap("jwt-token", token));
         }catch (AuthenticationException authExc){
             return new ResponseEntity<>("Invalid Login Credentials", HttpStatus.BAD_REQUEST);
