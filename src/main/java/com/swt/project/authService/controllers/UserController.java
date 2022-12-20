@@ -3,7 +3,9 @@ package com.swt.project.authService.controllers;
 import com.swt.project.authService.entity.Users;
 import com.swt.project.authService.models.dataAccessObject.ChangePasswordRequestDAO;
 import com.swt.project.authService.repository.UserRepo;
+import com.swt.project.authService.service.RefreshTokenService;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,13 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/user")
+@Slf4j
 public class UserController {
 
     @Autowired private UserRepo userRepo;
     @Autowired private AuthenticationManager authManager;
+
+    @Autowired private RefreshTokenService refreshTokenService;
 
     @Autowired private PasswordEncoder passwordEncoder;
 
@@ -48,14 +53,15 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@RequestBody String password){
         try {
             String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
             UsernamePasswordAuthenticationToken authInputToken =
                     new UsernamePasswordAuthenticationToken(email, password);
-
             authManager.authenticate(authInputToken).isAuthenticated();
-            userRepo.deleteById(userRepo.findByEmail(email).get().getId());
+            Long id = userRepo.findByEmail(email).get().getId();
+            refreshTokenService.deleteByUserId(id);
+            userRepo.deleteById(id);
             return new ResponseEntity<>("User deleted", HttpStatus.OK);
         }catch(Exception e){
+            log.info(e.getMessage());
             return new ResponseEntity<>("permission denied", HttpStatus.FORBIDDEN);
         }
     }

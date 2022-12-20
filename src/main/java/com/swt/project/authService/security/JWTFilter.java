@@ -1,6 +1,7 @@
 package com.swt.project.authService.security;
 
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Autowired private MyUserDetailsService userDetailsService;
     @Autowired private JWTUtil jwtUtil;
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -44,6 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
                     if(SecurityContextHolder.getContext().getAuthentication() == null){
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
+
                 }catch(JWTVerificationException exc){
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
                 }

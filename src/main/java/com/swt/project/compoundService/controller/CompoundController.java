@@ -107,7 +107,7 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping("/saveData")
-    public ResponseEntity<CompoundModel> saveDataRecord(@ModelAttribute CompoundModel compoundInterest) {
+    public ResponseEntity<CompoundModel> saveDataRecord(@RequestBody CompoundModel compoundInterest) {
         if(compoundService.validateDataForSave(compoundInterest)) {
             try {
                 compoundInterest.setDate(LocalDate.now().toString());

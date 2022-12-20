@@ -25,7 +25,7 @@ public class JWTUtil {
                 .withClaim("email", email)
                 .withIssuedAt(new Date())
                 .withIssuer("SWT-Projekt")
-                .withExpiresAt(new Date(System.currentTimeMillis() + 60000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1200000))
                 .sign(Algorithm.HMAC256(secret));
     }
 
@@ -37,4 +37,6 @@ public class JWTUtil {
         DecodedJWT jwt = verifier.verify(token);
         return jwt.getClaim("email").asString();
     }
+
+
 }
