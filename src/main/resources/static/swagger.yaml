@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: backend
   version: '1.0'
-  title: Compound Calculator
+  title: Compound Calculator test
   termsOfService: urn:tos
   contact: {}
   license:
