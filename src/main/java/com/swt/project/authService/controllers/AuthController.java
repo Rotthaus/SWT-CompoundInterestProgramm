@@ -1,7 +1,6 @@
 package com.swt.project.authService.controllers;
 
 import com.swt.project.authService.entity.RefreshToken;
-import com.swt.project.authService.exception.TokenRefreshException;
 import com.swt.project.authService.models.dataAccessObject.TokenRefreshRequestDAO;
 import com.swt.project.authService.models.dataTransferObject.AuthResponseDTO;
 import com.swt.project.authService.entity.UserRole;
@@ -22,7 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+
 import java.util.Optional;
 
 @RestController
@@ -99,8 +98,18 @@ public class AuthController {
     @PostMapping("refreshtoken")
     public ResponseEntity<?> refreshtoken( @RequestBody TokenRefreshRequestDAO request) {
         String requestRefreshToken = request.getRefreshToken();
+        String token ;
 
-        return refreshTokenService.findByToken(requestRefreshToken)
+        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(requestRefreshToken);
+        if(refreshToken.isPresent()){
+            token = jwtUtil.generateToken(refreshToken.get().getUser().getEmail());
+            return ResponseEntity.ok(new TokenRefreshResponseDTO(token, requestRefreshToken));
+        } else {
+        return new ResponseEntity<>("Token not in database", HttpStatus.BAD_REQUEST);
+        }
+
+
+        /*return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
@@ -108,6 +117,6 @@ public class AuthController {
                     return ResponseEntity.ok(new TokenRefreshResponseDTO(token, requestRefreshToken));
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-                        "Refresh token is not in database!"));
+                        "Refresh token is not in database!")); */
     }
 }
