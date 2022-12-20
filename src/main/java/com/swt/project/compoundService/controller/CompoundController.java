@@ -4,20 +4,18 @@ import com.swt.project.compoundService.repository.CompoundRepo;
 import com.swt.project.compoundService.entity.CompoundModel;
 import com.swt.project.authService.repository.UserRepo;
 import com.swt.project.compoundService.services.CompoundService;
-import io.swagger.annotations.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Optional;
+
 
 /**
  * Class CompoundInterestController provides http request
@@ -133,7 +131,7 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping(value = "/deleteData")
-    public ResponseEntity<List<CompoundModel>> deleteCompoundInterest(long id) {
+    public ResponseEntity<List<CompoundModel>> deleteCompoundInterest(@RequestBody long id) {
             if (compoundService.checkUser(id, compoundInterestRepository, userRepo)) {
                 try {
                     CompoundModel compoundInterest = compoundInterestRepository.findById(id);
