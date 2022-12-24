@@ -1,7 +1,5 @@
 package com.swt.project.authService.security;
 
-
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,8 +34,15 @@ public class JWTFilter extends OncePerRequestFilter {
         response.addHeader("Access-Control-Expose-Headers", "xsrf-token");
         if(authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
             String jwt = authHeader.substring(7);
+
+            if(jwtUtil.checkTokenExpire(jwt)) {
+                response.sendError(HttpServletResponse.SC_CONFLICT,"Token is expired");
+                return;
+            }
+
             if(jwt == null || jwt.isBlank()){
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
+                return;
             }else {
                 try{
                     String email = jwtUtil.validateTokenAndRetrieveSubject(jwt);
