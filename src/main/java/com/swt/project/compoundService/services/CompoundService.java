@@ -97,7 +97,7 @@ public class CompoundService {
 
     //Calculation methods
 
-    //Calculate the initial capital
+    //Calculate the initial capital - WRONG CALC
     public double calcInitialCapital(CompoundModel compoundInterest){
         double calc;
         calc = compoundInterest.getFinalCapital() / Math.pow(1 + (compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
