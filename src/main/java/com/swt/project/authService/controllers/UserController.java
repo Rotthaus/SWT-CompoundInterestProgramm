@@ -1,9 +1,11 @@
 package com.swt.project.authService.controllers;
 
+import com.swt.project.authService.entity.UserRole;
 import com.swt.project.authService.entity.Users;
 import com.swt.project.authService.models.dataAccessObject.ChangePasswordRequestDAO;
 import com.swt.project.authService.repository.UserRepo;
 import com.swt.project.authService.service.RefreshTokenService;
+import com.swt.project.authService.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired private UserRepo userRepo;
+    @Autowired private UserService userService;
     @Autowired private AuthenticationManager authManager;
 
     @Autowired private RefreshTokenService refreshTokenService;
@@ -37,9 +40,13 @@ public class UserController {
      */
     @GetMapping("/info")
     @ApiOperation(value = "returns details for a specific user")
-    public Users getUserDetails(){
+    public ResponseEntity getUserDetails(){
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepo.findByEmail(email).get();
+        long id = userRepo.findByEmail(email).get().getId();
+        String userEmail = userRepo.findByEmail(email).get().getEmail();
+        UserRole userRole = userRepo.findByEmail(email).get().getUserRole();
+
+        return new ResponseEntity(userService.userToJson(id, userEmail, userRole), HttpStatus.OK);
     }
 
 

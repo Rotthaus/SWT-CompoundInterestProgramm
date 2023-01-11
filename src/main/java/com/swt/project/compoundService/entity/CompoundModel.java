@@ -44,6 +44,13 @@ public class CompoundModel {
     @Column(name = "finalCapital")
     private double finalCapital;
 
+
+    /**
+     * setCalculatedComponent - the calculated Component
+     */
+    @Column(name = "CalculatedComponent")
+    private String calculatedComponent;
+
     /**
      * date - the creation date
      */
@@ -75,12 +82,13 @@ public class CompoundModel {
      * @param finalCapital - final capital
      */
     public CompoundModel(long idUser, double initialCapital, double period,
-                         double interestRate, double finalCapital, String date) {
+                         double interestRate, double finalCapital, String calculatedComponent, String date) {
         this.idUser = idUser;
         this.initialCapital = initialCapital;
         this.period = period;
         this.interestRate = interestRate;
         this.finalCapital = finalCapital;
+        this.calculatedComponent = calculatedComponent;
         this.date = date;
     }
 
@@ -192,5 +200,13 @@ public class CompoundModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getCalculatedComponent() {
+        return calculatedComponent;
+    }
+
+    public void setCalculatedComponent(String calculatedComponent) {
+        this.calculatedComponent = calculatedComponent;
     }
 }

@@ -70,29 +70,29 @@ public class CompoundController {
 
         if(compoundService.validateDataForCalc(compoundInterest)) {
             if (compoundInterest.getInitialCapital() == 0) {
-                compoundInterest.setInitialCapital(calcInitialCapital(compoundInterest));
-                //compoundInterest.setCalculatedComponent("initial capital");
+                compoundInterest.setInitialCapital(compoundService.calcInitialCapital(compoundInterest));
+                compoundInterest.setCalculatedComponent("initialCapital");
             }
 
             if (compoundInterest.getInterestRate() == 0) {
-                compoundInterest.setInterestRate(calcInterestRate(compoundInterest));
-                //compoundInterest.setCalculatedComponent("interest rate");
+                compoundInterest.setInterestRate(compoundService.calcInterestRate(compoundInterest));
+                compoundInterest.setCalculatedComponent("interestRate");
             }
 
             if (compoundInterest.getPeriod() == 0) {
-                compoundInterest.setPeriod(calcPeriod(compoundInterest));
-                //compoundInterest.setCalculatedComponent("period");
+                compoundInterest.setPeriod(compoundService.calcPeriod(compoundInterest));
+                compoundInterest.setCalculatedComponent("period");
             }
 
             if (compoundInterest.getFinalCapital() == 0) {
-                compoundInterest.setFinalCapital(calcFinalCapital(compoundInterest));
-                //compoundInterest.setCalculatedComponent("final capital");
+                compoundInterest.setFinalCapital(compoundService.calcFinalCapital(compoundInterest));
+                compoundInterest.setCalculatedComponent("finalCapital");
             }
 
             try {
-                return new ResponseEntity<>(compoundInterest, HttpStatus.CREATED);
+                return new ResponseEntity(compoundService.compoundModelToJsonWithCalcComponent(compoundInterest.getInitialCapital(),compoundInterest.getInterestRate(),compoundInterest.getPeriod(),compoundInterest.getFinalCapital(),compoundInterest.getCalculatedComponent()), HttpStatus.CREATED);
             } catch (Exception e) {
-                return new ResponseEntity("cant calculate data", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity("cant calculate data", HttpStatus.CONFLICT);
             }
         }
         return new ResponseEntity("data invalid", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -109,17 +109,17 @@ public class CompoundController {
         if(compoundService.validateDataForSave(compoundInterest)) {
             try {
                 compoundInterest.setDate(LocalDate.now().toString());
-                CompoundModel _compoundInterest =
-                        compoundInterestRepository.save(new CompoundModel(
+                compoundInterestRepository.save(new CompoundModel(
                                 userRepo.findByEmail(compoundService.returnUserFromAccessToken()).get().getId(),
                                 compoundInterest.getInitialCapital(),
                                 compoundInterest.getPeriod(),
                                 compoundInterest.getInterestRate(),
                                 compoundInterest.getFinalCapital(),
+                                compoundInterest.getCalculatedComponent(),
                                 compoundInterest.getDate()));
-                return new ResponseEntity<>(_compoundInterest, HttpStatus.CREATED);
+                return new ResponseEntity(compoundService.compoundModelToJsonWithCalcComponent(compoundInterest.getInitialCapital(),compoundInterest.getInterestRate(),compoundInterest.getPeriod(),compoundInterest.getFinalCapital(),compoundInterest.getCalculatedComponent()), HttpStatus.CREATED);
             } catch (Exception e) {
-                return new ResponseEntity("data cant saved", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity("data cant saved", HttpStatus.CONFLICT);
             }
         }
         return new ResponseEntity("data cant saved cause missing parameter", HttpStatus.BAD_REQUEST);
@@ -131,47 +131,18 @@ public class CompoundController {
      * @return ResponseEntity
      */
     @PostMapping(value = "/deleteData")
-    public ResponseEntity<List<CompoundModel>> deleteCompoundInterest(@RequestBody long id) {
-            if (compoundService.checkUser(id, compoundInterestRepository, userRepo)) {
+    public ResponseEntity<CompoundModel> deleteCompoundInterest(@RequestBody CompoundModel compoundInterest) {
+            if (compoundService.checkUser(compoundInterest.getId(), compoundInterestRepository, userRepo)) {
                 try {
-                    CompoundModel compoundInterest = compoundInterestRepository.findById(id);
-                    compoundInterestRepository.delete(compoundInterest);
+                    CompoundModel _compoundInterest = compoundInterestRepository.findById(compoundInterest.getId());
+                    compoundInterestRepository.delete(_compoundInterest);
                     return new ResponseEntity("data deleted", HttpStatus.OK);
                 } catch (Exception e) {
-                    System.out.println(e);
-                    return new ResponseEntity("data cant be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity("data cant be deleted", HttpStatus.BAD_REQUEST);
                 }
             }
-        return new ResponseEntity("no permission", HttpStatus.FORBIDDEN);
+        return new ResponseEntity("data cant be deleted", HttpStatus.FORBIDDEN);
     }
 
-    //Calculation methods
 
-    //Calculate the initial capital
-    public double calcInitialCapital(CompoundModel compoundInterest){
-        double calc;
-        calc = compoundInterest.getFinalCapital() / Math.pow(1 + (compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
-
-        return calc;
-    }
-    //Calculate the period
-    public double calcPeriod(CompoundModel compoundInterest){
-        double calc;
-        calc = Math.log(compoundInterest.getFinalCapital()/compoundInterest.getInitialCapital())/Math.log(1+compoundInterest.getInterestRate()/100);
-
-        return calc;
-    }
-    //Calculate the interest rate
-    public double calcInterestRate(CompoundModel compoundInterest){
-        double calc;
-        calc =(Math.pow((Math.sqrt(compoundInterest.getFinalCapital()/compoundInterest.getInitialCapital())),compoundInterest.getPeriod())-1)*100;
-        return calc;
-    }
-    //Calculate the final capital
-    public double calcFinalCapital(CompoundModel compoundInterest){
-        double calc;
-        calc = compoundInterest.getInitialCapital() + (compoundInterest.getInitialCapital() * (compoundInterest.getInterestRate()/100) * compoundInterest.getPeriod());
-
-        return calc;
-    }
 }

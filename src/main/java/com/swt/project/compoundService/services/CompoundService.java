@@ -75,4 +75,53 @@ public class CompoundService {
 
         return false;
     }
+
+    public String compoundModelToJson(double initialCapital, double interestRate, double period, double finalCapital){
+        String jsonObject = "{\"initialCapital\":\""+initialCapital+"\",";
+        jsonObject += "\"interestRate\":\""+interestRate+"\",";
+        jsonObject += "\"period\":\""+period+"\",";
+        jsonObject += "\"finalCapital\":\""+finalCapital+"\"}";
+
+        return jsonObject;
+    }
+
+    public String compoundModelToJsonWithCalcComponent(double initialCapital, double interestRate, double period, double finalCapital, String calculateComponent){
+        String jsonObject = "{\"initialCapital\":\""+initialCapital+"\",";
+        jsonObject += "\"interestRate\":\""+interestRate+"\",";
+        jsonObject += "\"period\":\""+period+"\",";
+        jsonObject += "\"finalCapital\":\""+finalCapital+"\",";
+        jsonObject += "\"calculatedComponent\":\""+calculateComponent+"\"}";
+
+        return jsonObject;
+    }
+
+    //Calculation methods
+
+    //Calculate the initial capital
+    public double calcInitialCapital(CompoundModel compoundInterest){
+        double calc;
+        calc = compoundInterest.getFinalCapital() / Math.pow(1 + (compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
+
+        return calc;
+    }
+    //Calculate the period
+    public double calcPeriod(CompoundModel compoundInterest){
+        double calc;
+        calc = Math.log(compoundInterest.getFinalCapital()/compoundInterest.getInitialCapital())/Math.log(1+compoundInterest.getInterestRate()/100);
+
+        return calc;
+    }
+    //Calculate the interest rate
+    public double calcInterestRate(CompoundModel compoundInterest){
+        double calc;
+        calc =(Math.pow((Math.sqrt(compoundInterest.getFinalCapital()/compoundInterest.getInitialCapital())),compoundInterest.getPeriod())-1)*100;
+        return calc;
+    }
+    //Calculate the final capital
+    public double calcFinalCapital(CompoundModel compoundInterest){
+        double calc;
+        calc = compoundInterest.getInitialCapital() + (compoundInterest.getInitialCapital() * (compoundInterest.getInterestRate()/100) * compoundInterest.getPeriod());
+
+        return calc;
+    }
 }
