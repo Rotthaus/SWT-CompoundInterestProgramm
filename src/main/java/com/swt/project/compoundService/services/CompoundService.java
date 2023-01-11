@@ -114,7 +114,8 @@ public class CompoundService {
     //Calculate the interest rate
     public double calcInterestRate(CompoundModel compoundInterest){
         double calc;
-        calc =(Math.pow((Math.sqrt(compoundInterest.getFinalCapital()/compoundInterest.getInitialCapital())),compoundInterest.getPeriod())-1)*100;
+        calc = compoundInterest.getFinalCapital() * 100 / compoundInterest.getInitialCapital() * compoundInterest.getPeriod();
+        //calc =(Math.pow((Math.sqrt(compoundInterest.getFinalCapital()/compoundInterest.getInitialCapital())),compoundInterest.getPeriod())-1)*100;
         return calc;
     }
     //Calculate the final capital
