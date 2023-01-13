@@ -67,7 +67,8 @@ public class CompoundController {
      */
     @PostMapping("/calcData")
     public ResponseEntity<CompoundModel> calc(@RequestBody CompoundModel compoundInterest) {
-
+        double finalCapitalPayout = 0;
+        double finalCapitalAccumulation = 0;
         if(compoundService.validateDataForCalc(compoundInterest)) {
             if (compoundInterest.getInitialCapital() == 0) {
                 compoundInterest.setInitialCapital(compoundService.calcInitialCapital(compoundInterest));
@@ -85,12 +86,17 @@ public class CompoundController {
             }
 
             if (compoundInterest.getFinalCapital() == 0) {
-                compoundInterest.setFinalCapital(compoundService.calcFinalCapital(compoundInterest));
+                finalCapitalPayout = compoundService.calcFinalCapitalPayout(compoundInterest);
+                finalCapitalAccumulation =compoundService.calcFinalCapitalAccumulation(compoundInterest);
                 compoundInterest.setCalculatedComponent("finalCapital");
             }
 
             try {
-                return new ResponseEntity(compoundService.compoundModelToJsonWithCalcComponent(compoundInterest.getInitialCapital(),compoundInterest.getInterestRate(),compoundInterest.getPeriod(),compoundInterest.getFinalCapital(),compoundInterest.getCalculatedComponent()), HttpStatus.CREATED);
+                if (compoundInterest.getCalculatedComponent() == "finalCapital") {
+                    return new ResponseEntity(compoundService.compoundModelToJsonWithCalcComponentFinalCapital(compoundInterest,finalCapitalPayout, finalCapitalAccumulation), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity(compoundService.compoundModelToJsonWithCalcComponent(compoundInterest.getInitialCapital(), compoundInterest.getInterestRate(), compoundInterest.getPeriod(), compoundInterest.getFinalCapital(), compoundInterest.getCalculatedComponent()), HttpStatus.CREATED);
+            }
             } catch (Exception e) {
                 return new ResponseEntity("cant calculate data", HttpStatus.CONFLICT);
             }
