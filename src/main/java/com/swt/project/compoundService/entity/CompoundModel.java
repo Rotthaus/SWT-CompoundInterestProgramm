@@ -14,7 +14,7 @@ public class CompoundModel {
 
     //### Properties ###
     /**
-     * id - key for the datatable
+     * id - key for the data record
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,7 +49,13 @@ public class CompoundModel {
      * setCalculatedComponent - the calculated Component
      */
     @Column(name = "CalculatedComponent")
-    private String calculatedComponent;
+    private CompoundComponent calculatedComponent;
+
+    /**
+     * method - the method of calculation
+     */
+    @Column(name = "method")
+    private CompoundMethod method;
 
     /**
      * date - the creation date
@@ -60,11 +66,8 @@ public class CompoundModel {
     /**
      * idUser - the id of the user
      */
-    //@ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn (name = "idUser")
     private long idUser;
-
-
 
     /**
      * Constructor without parameters
@@ -80,15 +83,19 @@ public class CompoundModel {
      * @param period - period
      * @param interestRate - interest rate
      * @param finalCapital - final capital
+     * @param calculatedComponent - calculated component
+     * @param method - method
+     * @param date - date
      */
     public CompoundModel(long idUser, double initialCapital, double period,
-                         double interestRate, double finalCapital, String calculatedComponent, String date) {
+                         double interestRate, double finalCapital, CompoundComponent calculatedComponent, CompoundMethod method, String date) {
         this.idUser = idUser;
         this.initialCapital = initialCapital;
         this.period = period;
         this.interestRate = interestRate;
         this.finalCapital = finalCapital;
         this.calculatedComponent = calculatedComponent;
+        this.method = method;
         this.date = date;
     }
 
@@ -96,9 +103,9 @@ public class CompoundModel {
     //### Getter ###
     /**
      * getId
-     * Getter for id
+     * Getter for id of the data record
      *
-     * @return the id for Database
+     * @return the id for data record
      */
     public long getId() {
         return id;
@@ -134,6 +141,12 @@ public class CompoundModel {
         return interestRate;
     }
 
+    /**
+     * getIdUser
+     * Getter for Id of the User
+     *
+     * @return the Id of ther User
+     */
     public long getIdUser() {
         return idUser;
     }
@@ -148,6 +161,35 @@ public class CompoundModel {
         return finalCapital;
     }
 
+    /**
+     * getMethod
+     * Getter for the method
+     *
+     * @return the method
+     */
+    public CompoundMethod getMethod() {
+        return method;
+    }
+
+    /**
+     * getCalculatedComponent
+     * Getter for calculated Component
+     *
+     * @return the calculated component
+     */
+    public CompoundComponent getCalculatedComponent() {
+        return calculatedComponent;
+    }
+
+    /**
+     * getDate
+     * Getter for date
+     *
+     * @return the date
+     */
+    public String getDate() {
+        return date;
+    }
     //### Setter ###
     /**
      * setInitialCapital
@@ -189,24 +231,43 @@ public class CompoundModel {
         this.finalCapital = finalCapital;
     }
 
-
+    /**
+     * setIdUser
+     * Setter for user id
+     *
+     * @param idUser - the id of the user
+     */
     public void setIdUser(int idUser) {
         this.idUser = idUser;
     }
 
-    public String getDate() {
-        return date;
-    }
-
+    /**
+     * setDate
+     * Setter for date
+     *
+     * @param date - the date
+     */
     public void setDate(String date) {
         this.date = date;
     }
 
-    public String getCalculatedComponent() {
-        return calculatedComponent;
+    /**
+     * setCalculatedComponent
+     * Setter for calculated Component
+     *
+     * @param calculatedComponent - the calculated component
+     */
+    public void setCalculatedComponent(CompoundComponent calculatedComponent) {
+        this.calculatedComponent = calculatedComponent;
     }
 
-    public void setCalculatedComponent(String calculatedComponent) {
-        this.calculatedComponent = calculatedComponent;
+    /**
+     * setMethod
+     * Setter for method
+     *
+     * @param method - the method
+     */
+    public void setMethod(CompoundMethod method) {
+        this.method = method;
     }
 }

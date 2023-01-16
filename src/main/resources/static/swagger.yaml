@@ -1,15 +1,12 @@
 swagger: '2.0'
 info:
-  description: backend
-  version: '1.0'
-  title: Compound Calculator test
+  description: Backend for the software engineering project
+  version: '6.0'
+  title: software engineering project
   termsOfService: urn:tos
   contact: {}
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0
-host: lr-server.online:8081
-basePath: /
+schemes:
+  - http
 tags:
   - name: auth-controller
     description: Auth Controller
@@ -22,34 +19,41 @@ paths:
     post:
       tags:
         - auth-controller
-      summary: returns an access token for a specific user from server
+      summary: returns tokens for a specific user from server
       operationId: loginHandlerUsingPOST
       consumes:
         - application/json
       produces:
         - '*/*'
       parameters:
-        - name: email
-          in: query
-          required: false
-          type: string
-        - name: password
-          in: query
-          required: false
-          type: string
+        - in: body
+          name: login
+          description: Login
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
       responses:
         '200':
           description: OK
           schema:
             type: object
-        '201':
-          description: Created
+            example: {
+              "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJTV1QtUHJvamVrdCIsImV4cCI6MTY3MjkxNDQyMCwiaWF0IjoxNjcyOTEzMjIwLCJlbWFpbCI6IkpvaG4zIn0.Bt5_6F_Amn5ucXDNffGcHynHr7CEkY1BKW2QtB6sAMg",
+              "refreshToken": "7455bf9e-b8ef-4dec-be34-4b9135c2a5ba",
+              "tokenType": "Bearer "
+            }
         '401':
           description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          schema:
+            type: object
+            example: Invalid Login Credentials
       deprecated: false
   /api/auth/register:
     post:
@@ -62,27 +66,32 @@ paths:
       produces:
         - '*/*'
       parameters:
-        - name: email
-          in: formData
-          required: false
-          type: string
-        - name: password
-          in: formData
-          required: false
-          type: string
+        - in: body
+          name: register
+          description: register
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
       responses:
         '200':
           description: OK
           schema:
             type: object
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            example: {
+              "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJTV1QtUHJvamVrdCIsImV4cCI6MTY3MjkxNDQyMCwiaWF0IjoxNjcyOTEzMjIwLCJlbWFpbCI6IkpvaG4zIn0.Bt5_6F_Amn5ucXDNffGcHynHr7CEkY1BKW2QtB6sAMg",
+              "refreshToken": "7455bf9e-b8ef-4dec-be34-4b9135c2a5ba",
+              "tokenType": "Bearer "}
+        '400':
+          description: Bad Request - invalid Credentials
+        '409':
+          description: Conflict - E-mail already exist
       deprecated: false
   /api/compound/calcData:
     post:
@@ -95,134 +104,151 @@ paths:
       produces:
         - '*/*'
       parameters:
-        - name: finalCapital
-          in: query
-          required: false
-          type: number
-          format: double
-        - name: initialCapital
-          in: query
-          required: false
-          type: number
-          format: double
-        - name: interestRate
-          in: query
-          required: false
-          type: number
-          format: double
-        - name: period
-          in: query
-          required: false
-          type: number
-          format: double
+        - in: body
+          name: calcData
+          description: Calculate one of the four components of compound interest (initial capital, interest rate, period, final capital) based on the provided input </br></br> - parameter with 0 as value will be calculated </br> - the method need to be choosen by PAYOUT or ACCUMULATION
+          schema:
+            type: object
+            properties:
+              initalCapital:
+                example: 100
+                type: number
+              interestRate:
+                example: 1.5
+                type: number
+              period:
+                example: 6
+                type: number
+              finalCapital:
+                type: number
+              method:
+                example: PAYOUT
+                type: string
       responses:
-        '200':
-          description: OK
         '201':
           description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          schema:
+            type: object
+            example: {"initialCapital":"4.990041592683173","interestRate":"1.0","period":"7.0","finalCapital":"5.35","calculateComponent":"INITIALCAPITAL","method":"PAYOUT"}
+        '409':
+          description: Conflict - Unable to calculate the data
+        '500':
+          description: Internal Server Error - Data validation failed
       deprecated: false
   /api/compound/deleteData:
     post:
       tags:
         - compound-controller
-      summary: delete a data record from the server
+      summary: delete a data record from the server for a specific user
       operationId: deleteCompoundInterestUsingPOST
       consumes:
         - application/json
       produces:
         - '*/*'
       parameters:
-        - name: id
-          in: query
-          description: id
-          required: false
-          type: integer
-          format: int64
+        - in: body
+          name: saveData
+          description: delete a data record from the server for a specific user
+          schema:
+            type: object
+            properties:
+              id:
+                example: 1
       responses:
         '200':
-          description: OK
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          description: OK - data deleted
+        '400':
+          description: Bad Request - data cant be deleted
       deprecated: false
   /api/compound/getData:
     get:
       tags:
         - compound-controller
-      summary: returns all Data for a the user from database
-      operationId: getCompoundInterestUsingGET
+      summary: Retrieve the list of compound interests for the current user
+      description: Retrieve the list of compound interests for the current user
+      operationId: getCompoundInterest
       produces:
         - '*/*'
       responses:
         '200':
-          description: OK
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          description: "OK "
+          schema:
+            type: object
+            example:     [{
+              "id": 1,
+              "initialCapital": 1.0,
+              "period": 7.0,
+              "interestRate": 1.0,
+              "finalCapital": 5.35,
+              "calculatedComponent": "FINALCAPITAL",
+              "method": "PAYOUT",
+              "date": "2023-01-16",
+              "idUser": 3
+            },
+              {
+                "id": 2,
+                "initialCapital": 1.0,
+                "period": 7.0,
+                "interestRate": 1.0,
+                "finalCapital": 5.35,
+                "calculatedComponent": "FINALCAPITAL",
+                "method": "PAYOUT",
+                "date": "2023-01-16",
+                "idUser": 3}]
+        '204' :
+          description: No Content - No data saved for the user
+        '500':
+          description: Internal Server Error -An error occurred while retrieving the data
       deprecated: false
   /api/compound/saveData:
     post:
       tags:
         - compound-controller
-      summary: save data to the server
-      operationId: saveDataRecordUsingPOST
+      summary: Save data record
+      operationId: saveData
       consumes:
         - application/json
       produces:
         - '*/*'
       parameters:
-        - name: finalCapital
-          in: query
-          required: false
-          type: number
-          format: double
-        - name: initialCapital
-          in: query
-          required: false
-          type: number
-          format: double
-        - name: interestRate
-          in: query
-          required: false
-          type: number
-          format: double
-        - name: period
-          in: query
-          required: false
-          type: number
-          format: double
+        - in: body
+          name: saveData
+          description: Saving a data record to the Database for a specific user </br></br> - the calculatedComponent need to be choosen by INITIALCAPITAL, PERIOD, INTERESTRATE or FINALCAPITAL </br> - the method need to be set by PAYOUT or ACCUMULATION <br>
+          schema:
+            type: object
+            properties:
+              initalCapital:
+                example: 100
+                type: number
+              interestRate:
+                example: 1.5
+                type: number
+              period:
+                example: 6
+                type: number
+              finalCapital:
+                example: 199
+                type: number
+              calculatedComponent:
+                example: FINALCAPITAL
+                type: string
+              method:
+                example: PAYOUT
+                type: string
       responses:
-        '200':
-          description: OK
         '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          description: Created - Data saved successfully
+        '400':
+          description: Conflict -  Missing parameter
+        '409':
+          description: Bad Request - Data can't be saved
       deprecated: false
   /api/user/deleteUser:
     post:
       tags:
         - user-controller
       summary: deletes a user
-      operationId: deleteUserUsingPOST
+      operationId: deleteUser
       consumes:
         - application/json
       produces:

@@ -10,6 +10,7 @@ import com.swt.project.authService.models.dataTransferObject.TokenRefreshRespons
 import com.swt.project.authService.repository.UserRepo;
 import com.swt.project.authService.security.JWTUtil;
 import com.swt.project.authService.service.RefreshTokenService;
+import com.swt.project.authService.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class AuthController {
     @Autowired private JWTUtil jwtUtil;
     @Autowired private AuthenticationManager authManager;
     @Autowired private PasswordEncoder passwordEncoder;
-
+    @Autowired private UserService userService;
     @Autowired private RefreshTokenService refreshTokenService;
 
 
@@ -46,21 +47,29 @@ public class AuthController {
     @PostMapping(value = "/register")
     @ApiOperation(value = "adds a user to the database")
     public ResponseEntity<?> registerHandler(@RequestBody Users user){
-        if(userRepo.existsByEmail(user.getEmail())){
-            return new ResponseEntity<>("E-mail already exist", HttpStatus.BAD_REQUEST);
+
+        if(userService.isValidEmail(user.getEmail())){
+            if(userService.isValidPassword(user.getPassword())) {
+                if (userRepo.existsByEmail(user.getEmail())) {
+                    return new ResponseEntity<>("E-mail already exist", HttpStatus.BAD_REQUEST);
+                }
+                try {
+                    String encodedPass = passwordEncoder.encode(user.getPassword());
+                    user.setPassword(encodedPass);
+                    user.setUserRole(UserRole.USER);
+                    user = userRepo.save(user);
+                    String token = jwtUtil.generateToken(user.getEmail());
+                    RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+                    return new ResponseEntity<>(new AuthResponseDTO(token, refreshToken.getToken()), HttpStatus.OK);
+                    // return ResponseEntity.ok(Collections.singletonMap("jwt-token", token));
+                } catch (Exception e) {
+                    return new ResponseEntity<>("Register failed.", HttpStatus.CONFLICT);
+                }
+            }else{
+                return new ResponseEntity<>("Invalid Password", HttpStatus.BAD_REQUEST);
+            }
         }
-        try {
-            String encodedPass = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPass);
-            user.setUserRole(UserRole.USER);
-            user = userRepo.save(user);
-            String token = jwtUtil.generateToken(user.getEmail());
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-            return new ResponseEntity<>(new AuthResponseDTO(token,refreshToken.getToken()),HttpStatus.OK);
-           // return ResponseEntity.ok(Collections.singletonMap("jwt-token", token));
-        } catch (Exception e){
-            return new ResponseEntity<>("Register failed.", HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity<>("Invalid E-Mail", HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -107,7 +116,6 @@ public class AuthController {
         } else {
         return new ResponseEntity<>("Token not in database", HttpStatus.BAD_REQUEST);
         }
-
 
         /*return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
