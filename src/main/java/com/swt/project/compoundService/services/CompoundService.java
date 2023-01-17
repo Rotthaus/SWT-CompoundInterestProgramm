@@ -150,7 +150,7 @@ public class CompoundService {
     public double calcInterestRate(CompoundModel compoundInterest){
         if(compoundInterest.getMethod().equals(CompoundMethod.PAYOUT)) {
             //PAYOUT
-            return (compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital() - 1) / compoundInterest.getPeriod()/100;
+            return (compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital() - 1) / (compoundInterest.getPeriod()/100);
         } else {
             //ACCUMULATION
             return (Math.pow(compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital(), 1.0 / compoundInterest.getPeriod()) - 1)*100;
