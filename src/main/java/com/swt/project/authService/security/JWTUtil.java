@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j
@@ -47,5 +49,25 @@ public class JWTUtil {
         return expirationDate.before(new Date());
     }
 
+    public boolean isTokenFormatValid(String token) {
+        String pattern = "^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]*$";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(token);
+        if (!m.matches() || token.length() > 255 || token.length() < 10) {
+            return true;
+        }
+        return false;
+    }
 
+    public boolean isTokenValid(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .build();
+            verifier.verify(token);
+            return false;
+        } catch (JWTVerificationException e) {
+            return true;
+        }
+    }
 }

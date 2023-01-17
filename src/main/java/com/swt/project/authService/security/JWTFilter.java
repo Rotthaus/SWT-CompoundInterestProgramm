@@ -35,6 +35,16 @@ public class JWTFilter extends OncePerRequestFilter {
         if(authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
             String jwt = authHeader.substring(7);
 
+            if(jwtUtil.isTokenValid(jwt)) {
+                response.sendError(HttpServletResponse.SC_CONFLICT,"token not valid");
+                return;
+            }
+
+            if(jwtUtil.isTokenFormatValid(jwt)) {
+                response.sendError(HttpServletResponse.SC_CONFLICT,"wrong pattern");
+                return;
+            }
+
             if(jwtUtil.checkTokenExpire(jwt)) {
                 response.sendError(HttpServletResponse.SC_CONFLICT,"Token is expired");
                 return;

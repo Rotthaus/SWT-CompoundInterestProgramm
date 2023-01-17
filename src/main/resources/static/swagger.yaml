@@ -279,16 +279,15 @@ paths:
       tags:
         - user-controller
       summary: returns details for a specific user
-      operationId: getUserDetailsUsingGET
+      operationId: getUserDetails
       produces:
         - '*/*'
       responses:
         '200':
           description: OK
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          schema:
+            type: object
+            example: {"id":"1","email":"user@swt-projekt.de","userRole":"USER"}
+        '409':
+          description: Conflict - Problem with authentication
       deprecated: false

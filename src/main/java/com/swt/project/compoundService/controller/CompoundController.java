@@ -63,7 +63,7 @@ public class CompoundController {
             //return response
             return new ResponseEntity<>(compoundInterestRepository.findAllByIdUser(idOfUser), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Request cannot be processed ", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -87,7 +87,7 @@ public class CompoundController {
             }
         }
         //data validate failed
-        return new ResponseEntity("data invalid", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity("data invalid", HttpStatus.BAD_REQUEST);
     }
 
 
