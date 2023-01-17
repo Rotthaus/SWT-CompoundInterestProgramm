@@ -39,3 +39,11 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task startServer(type: JavaExec) {
+	group = ' start server'
+	description = 'runs the main method'
+
+	main = 'src/main/java/com/swt/project/ProjectApplication.java'
+	classpath = sourceSets.main.runtimeClasspath
+}

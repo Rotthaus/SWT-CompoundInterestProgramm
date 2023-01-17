@@ -34,6 +34,7 @@ public class CompoundService {
         return false;
     }
 
+    //validates the data for the calculation
     public boolean validateDataForCalc(CompoundModel compoundInterest){
         if(compoundInterest.getMethod().equals(CompoundMethod.PAYOUT) || compoundInterest.getMethod().equals(CompoundMethod.ACCUMULATION)) {
             int marker = 0;
@@ -57,6 +58,7 @@ public class CompoundService {
         return false;
     }
 
+    //validates the data to save in database
     public boolean validateDataForSave(CompoundModel compoundInterest){
         for (CompoundComponent component : CompoundComponent.values()) {
             if(component.equals(compoundInterest.getCalculatedComponent())){
@@ -84,6 +86,7 @@ public class CompoundService {
         return false;
     }
 
+    //creates a json object
     public String compoundModelToJson(double initialCapital, double interestRate, double period, double finalCapital){
         String jsonObject = "{\"initialCapital\":\""+initialCapital+"\",";
         jsonObject += "\"interestRate\":\""+interestRate+"\",";
@@ -93,12 +96,13 @@ public class CompoundService {
         return jsonObject;
     }
 
+    //creates a json object
     public String compoundModelToJsonWithCalcComponent(double initialCapital, double interestRate, double period, double finalCapital, CompoundMethod method, CompoundComponent calculateComponent){
         String jsonObject = "{\"initialCapital\":\""+initialCapital+"\",";
         jsonObject += "\"interestRate\":\""+interestRate+"\",";
         jsonObject += "\"period\":\""+period+"\",";
         jsonObject += "\"finalCapital\":\""+finalCapital+"\",";
-        jsonObject += "\"calculateComponent\":\""+calculateComponent+"\",";
+        jsonObject += "\"calculatedComponent\":\""+calculateComponent+"\",";
         jsonObject += "\"method\":\""+method+"\"}";
 
         return jsonObject;
