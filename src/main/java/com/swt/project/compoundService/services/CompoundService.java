@@ -108,23 +108,39 @@ public class CompoundService {
         return jsonObject;
     }
 
+
+    //Analyse the body the request and calculate the wanted component
+    public CompoundModel calcMissingComponent(CompoundModel compoundInterest){
+        if (compoundInterest.getInitialCapital() == 0) {
+            compoundInterest.setInitialCapital(calcInitialCapital(compoundInterest));
+            compoundInterest.setCalculatedComponent(CompoundComponent.INITIALCAPITAL);
+        }
+        //calculate the interestRate
+        if (compoundInterest.getInterestRate() == 0) {
+            compoundInterest.setInterestRate(calcInterestRate(compoundInterest));
+            compoundInterest.setCalculatedComponent(CompoundComponent.INTERESTRATE);
+        }
+        //calculate the period
+        if (compoundInterest.getPeriod() == 0) {
+            compoundInterest.setPeriod(calcPeriod(compoundInterest));
+            compoundInterest.setCalculatedComponent(CompoundComponent.PERIOD);
+        }
+        //calculate the finalCapital
+        if (compoundInterest.getFinalCapital() == 0) {
+            compoundInterest.setFinalCapital(calcFinalCapital(compoundInterest));
+            compoundInterest.setCalculatedComponent(CompoundComponent.FINALCAPITAL);
+        }
+
+        return compoundInterest;
+    }
+
     //Calculation methods
 
     //Calculate the initial capital
     public double calcInitialCapital(CompoundModel compoundInterest){
-        if(compoundInterest.getMethod().equals("payout")) {
+        if(compoundInterest.getMethod().equals(CompoundMethod.PAYOUT)) {
             //PAYOUT
-            return compoundInterest.getFinalCapital() / Math.pow((1 + compoundInterest.getInterestRate() / 100), compoundInterest.getPeriod());
-        } else {
-            //ACCUMULATION
-            return compoundInterest.getFinalCapital() / Math.pow((1 + compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
-        }
-    }
-    //Calculate the period
-    public double calcPeriod(CompoundModel compoundInterest){
-        if(compoundInterest.getMethod().equals("payout")) {
-            //PAYOUT
-            return Math.log(compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital()) / Math.log(1 + compoundInterest.getInterestRate()/100);
+            return compoundInterest.getFinalCapital() / (1 + compoundInterest.getInterestRate()/100 * compoundInterest.getPeriod());
         } else {
             //ACCUMULATION
             return compoundInterest.getFinalCapital() / Math.pow((1 + compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
@@ -132,22 +148,32 @@ public class CompoundService {
     }
     //Calculate the interest rate
     public double calcInterestRate(CompoundModel compoundInterest){
-        if(compoundInterest.getMethod().equals("payout")) {
+        if(compoundInterest.getMethod().equals(CompoundMethod.PAYOUT)) {
             //PAYOUT
-            return Math.pow(compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital(), 1/compoundInterest.getPeriod()/100) - 1;
+            return (compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital() - 1) / compoundInterest.getPeriod()/100;
         } else {
             //ACCUMULATION
-            return compoundInterest.getFinalCapital() / Math.pow((1 + compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
+            return (Math.pow(compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital(), 1.0 / compoundInterest.getPeriod()) - 1)*100;
+        }
+    }
+    //Calculate the period
+    public double calcPeriod(CompoundModel compoundInterest){
+        if(compoundInterest.getMethod().equals(CompoundMethod.PAYOUT)) {
+            //PAYOUT
+            return (compoundInterest.getFinalCapital()-compoundInterest.getInitialCapital())/((compoundInterest.getInitialCapital()*compoundInterest.getInterestRate())/100);
+        } else {
+            //ACCUMULATION
+            return Math.log(compoundInterest.getFinalCapital() / compoundInterest.getInitialCapital()) / Math.log(1 + compoundInterest.getInterestRate()/100);
         }
     }
     //Calculate the final capital
     public double calcFinalCapital(CompoundModel compoundInterest){
-        if(compoundInterest.getMethod().equals("payout")) {
+        if(compoundInterest.getMethod().equals(CompoundMethod.PAYOUT)) {
             //PAYOUT
             return compoundInterest.getInitialCapital() * (1+((compoundInterest.getInterestRate() * compoundInterest.getPeriod())/100));
         } else {
             //ACCUMULATION
-            return compoundInterest.getFinalCapital() / Math.pow((1 + compoundInterest.getInterestRate()/100),compoundInterest.getPeriod());
+            return compoundInterest.getInitialCapital() * Math.pow(1 + compoundInterest.getInterestRate()/100, compoundInterest.getPeriod());
         }
     }
 }

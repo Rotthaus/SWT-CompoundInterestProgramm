@@ -77,26 +77,8 @@ public class CompoundController {
     public ResponseEntity<CompoundModel> calc(@RequestBody CompoundModel compoundInterest) {
         //validate data for calculation
         if(compoundService.validateDataForCalc(compoundInterest)) {
-            //calculate the initialCapital
-            if (compoundInterest.getInitialCapital() == 0) {
-                compoundInterest.setInitialCapital(compoundService.calcInitialCapital(compoundInterest));
-                compoundInterest.setCalculatedComponent(CompoundComponent.INITIALCAPITAL);
-            }
-            //calculate the interestRate
-            if (compoundInterest.getInterestRate() == 0) {
-                compoundInterest.setInterestRate(compoundService.calcInterestRate(compoundInterest));
-                compoundInterest.setCalculatedComponent(CompoundComponent.INTERESTRATE);
-            }
-            //calculate the period
-            if (compoundInterest.getPeriod() == 0) {
-                compoundInterest.setPeriod(compoundService.calcPeriod(compoundInterest));
-                compoundInterest.setCalculatedComponent(CompoundComponent.PERIOD);
-            }
-            //calculate the finalCapital
-            if (compoundInterest.getFinalCapital() == 0) {
-                compoundInterest.setFinalCapital(compoundService.calcFinalCapital(compoundInterest));
-                compoundInterest.setCalculatedComponent(CompoundComponent.FINALCAPITAL);
-            }
+            //calculate the missing component
+            compoundInterest = compoundService.calcMissingComponent(compoundInterest);
             //returns the response
             try {
                 return new ResponseEntity(compoundService.compoundModelToJsonWithCalcComponent(compoundInterest.getInitialCapital(), compoundInterest.getInterestRate(), compoundInterest.getPeriod(), compoundInterest.getFinalCapital(),compoundInterest.getMethod(), compoundInterest.getCalculatedComponent()), HttpStatus.CREATED);
