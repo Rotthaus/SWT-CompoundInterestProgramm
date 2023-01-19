@@ -14,6 +14,6 @@ public class RedirectController {
     @RequestMapping("/")
     public RedirectView redirectWithUsingRedirectView(
             RedirectAttributes attributes) {
-        return new RedirectView("http://lr-server.online:8081/swagger-ui.html");
+        return new RedirectView("http://localhost:8081/swagger-ui.html");
     }
 }

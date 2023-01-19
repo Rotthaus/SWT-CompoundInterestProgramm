@@ -19,7 +19,7 @@ paths:
     post:
       tags:
         - auth-controller
-      summary: returns tokens for a specific user from server
+      summary: Interface to login with credentials
       operationId: loginHandlerUsingPOST
       consumes:
         - application/json
@@ -28,7 +28,7 @@ paths:
       parameters:
         - in: body
           name: login
-          description: Login
+          description: return tokens for a specific user from server
           schema:
             type: object
             required:
@@ -49,17 +49,17 @@ paths:
               "refreshToken": "7455bf9e-b8ef-4dec-be34-4b9135c2a5ba",
               "tokenType": "Bearer "
             }
-        '401':
-          description: Unauthorized
-          schema:
-            type: object
-            example: Invalid Login Credentials
+        '400':
+          description: User not found in database
+        '400 ':
+          description: Invalid login credentials
+
       deprecated: false
   /api/auth/register:
     post:
       tags:
         - auth-controller
-      summary: adds a user to the database
+      summary: Interface to register new users
       operationId: registerHandlerUsingPOST
       consumes:
         - application/x-www-form-urlencoded
@@ -68,7 +68,7 @@ paths:
       parameters:
         - in: body
           name: register
-          description: register
+          description: adds a user to the databse and return the tokens for the user
           schema:
             type: object
             required:
@@ -89,15 +89,54 @@ paths:
               "refreshToken": "7455bf9e-b8ef-4dec-be34-4b9135c2a5ba",
               "tokenType": "Bearer "}
         '400':
-          description: Bad Request - invalid Credentials
-        '409':
-          description: Conflict - E-mail already exist
+          description: Invalid Password
+
+        '400 ':
+          description: Invalid E-Mail
+
+        '409 ':
+          description: Register failed
+
+      deprecated: false
+  /api/auth/refreshtoken:
+    post:
+      tags:
+        - auth-controller
+      summary: Interface to use the refresh-token
+      operationId: refreshTokenHandlerUsingPOST
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: refreshToken
+          description: uses the refresh-token of the user to generate a new jwt-token
+          schema:
+            type: object
+            required:
+              - refreshToken
+            properties:
+              refreshToken:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            example: {
+              "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJTV1QtUHJvamVrdCIsImV4cCI6MTY3MjkxNDQyMCwiaWF0IjoxNjcyOTEzMjIwLCJlbWFpbCI6IkpvaG4zIn0.Bt5_6F_Amn5ucXDNffGcHynHr7CEkY1BKW2QtB6sAMg",
+              "refreshToken": "7455bf9e-b8ef-4dec-be34-4b9135c2a5ba",
+              "tokenType": "Bearer "}
+        '400':
+          description: Token not in database
+
       deprecated: false
   /api/compound/calcData:
     post:
       tags:
         - compound-controller
-      summary: calculate a data record - requires no authentication
+      summary: Interface to calculate the compound interest - requires  no authentication
       operationId: calcUsingPOST
       consumes:
         - application/json
@@ -106,18 +145,18 @@ paths:
       parameters:
         - in: body
           name: calcData
-          description: Calculate one of the four components of compound interest (initial capital, interest rate, period, final capital) based on the provided input </br></br> - parameter with 0 as value will be calculated </br> - the method need to be choosen by PAYOUT or ACCUMULATION
+          description: Calculate one of the four components of compound interest (initial capital, interest rate, period, final capital) based on the provided input </br></br> - parameter with 0 as value will be calculated </br> - the parameter "method" can be choosen by PAYOUT or ACCUMULATION for the wanted calculation
           schema:
             type: object
             properties:
               initalCapital:
-                example: 100
+                example: 5
                 type: number
               interestRate:
-                example: 1.5
+                example: 1
                 type: number
               period:
-                example: 6
+                example: 7
                 type: number
               finalCapital:
                 type: number
@@ -129,17 +168,19 @@ paths:
           description: Created
           schema:
             type: object
-            example: {"initialCapital":"4.990041592683173","interestRate":"1.0","period":"7.0","finalCapital":"5.35","calculateComponent":"INITIALCAPITAL","method":"PAYOUT"}
+            example: {"initialCapital":"5","interestRate":"1.0","period":"7.0","finalCapital":"5.35","calculateComponent":"INITIALCAPITAL","method":"PAYOUT"}
         '409':
-          description: Conflict - Unable to calculate the data
-        '500':
-          description: Internal Server Error - Data validation failed
+          description: Cant calculate data
+
+        '400':
+          description: Data invalid
+
       deprecated: false
   /api/compound/deleteData:
     post:
       tags:
         - compound-controller
-      summary: delete a data record from the server for a specific user
+      summary: Interface to delete a data record from the database for a specific user - requires authentication
       operationId: deleteCompoundInterestUsingPOST
       consumes:
         - application/json
@@ -148,7 +189,7 @@ paths:
       parameters:
         - in: body
           name: saveData
-          description: delete a data record from the server for a specific user
+          description: delete a data record from the server for a specific user by an id
           schema:
             type: object
             properties:
@@ -156,15 +197,17 @@ paths:
                 example: 1
       responses:
         '200':
-          description: OK - data deleted
+          description: Data deleted
         '400':
-          description: Bad Request - data cant be deleted
+          description: Data cant be deleted
+        '401':
+          description: Problem with authentication
       deprecated: false
   /api/compound/getData:
     get:
       tags:
         - compound-controller
-      summary: Retrieve the list of compound interests for the current user
+      summary: Interface to retrieve the list of compound interests for the current user - requires authentication
       description: Retrieve the list of compound interests for the current user
       operationId: getCompoundInterest
       produces:
@@ -179,10 +222,10 @@ paths:
               "initialCapital": 1.0,
               "period": 7.0,
               "interestRate": 1.0,
-              "finalCapital": 5.35,
-              "calculatedComponent": "FINALCAPITAL",
-              "method": "PAYOUT",
-              "date": "2023-01-16",
+              "finalCapital": 5.36766,
+              "calculatedComponent": "period",
+              "method": "ACCUMULATION",
+              "date": "2023-01-15",
               "idUser": 3
             },
               {
@@ -195,16 +238,18 @@ paths:
                 "method": "PAYOUT",
                 "date": "2023-01-16",
                 "idUser": 3}]
-        '204' :
-          description: No Content - No data saved for the user
-        '500':
-          description: Internal Server Error -An error occurred while retrieving the data
+        '204':
+          description: No data saved for the user
+        '400':
+          description: Request cannot be processed
+        '401':
+          description: Problem with authentication
       deprecated: false
   /api/compound/saveData:
     post:
       tags:
         - compound-controller
-      summary: Save data record
+      summary: Interface to save a data record in the database for a specific user - requires authentication
       operationId: saveData
       consumes:
         - application/json
@@ -213,7 +258,7 @@ paths:
       parameters:
         - in: body
           name: saveData
-          description: Saving a data record to the Database for a specific user </br></br> - the calculatedComponent need to be choosen by INITIALCAPITAL, PERIOD, INTERESTRATE or FINALCAPITAL </br> - the method need to be set by PAYOUT or ACCUMULATION <br>
+          description: Saving a data record to the database for a specific user </br></br> - the calculatedComponent need to be choosen by INITIALCAPITAL, PERIOD, INTERESTRATE or FINALCAPITAL </br> - the method need to be set by PAYOUT or ACCUMULATION <br>
           schema:
             type: object
             properties:
@@ -237,17 +282,31 @@ paths:
                 type: string
       responses:
         '201':
-          description: Created - Data saved successfully
+          description: Created
+          schema:
+            type: object
+            example: {
+              "initalCapital": 100,
+              "interestRate": 1.5,
+              "period": 6,
+              "finalCapital": 199,
+              "calculatedComponent": "FINALCAPITAL",
+              "method": "PAYOUT"
+            }
         '400':
-          description: Conflict -  Missing parameter
+          description: Data cant saved cause missing parameter
+
+        '401':
+          description: Problem with authentication
+
         '409':
-          description: Bad Request - Data can't be saved
+          description: Data can't be saved
       deprecated: false
   /api/user/deleteUser:
     post:
       tags:
         - user-controller
-      summary: deletes a user
+      summary: Interface to delete a user - requires authentication
       operationId: deleteUser
       consumes:
         - application/json
@@ -256,29 +315,28 @@ paths:
       parameters:
         - in: body
           name: password
-          description: password
+          description: The user can delete his own account
           required: false
           schema:
             type: string
+            example: userPassword
       responses:
         '200':
-          description: OK
-          schema:
-            type: string
-        '201':
-          description: Created
+          description: User deleted
+
         '401':
-          description: Unauthorized
+          description: Problem with authentication
+
         '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          description: Permission denied
+
+
       deprecated: false
   /api/user/info:
     get:
       tags:
         - user-controller
-      summary: returns details for a specific user
+      summary: Interface to return details for a specific user - requires authentication
       operationId: getUserDetails
       produces:
         - '*/*'
@@ -288,6 +346,28 @@ paths:
           schema:
             type: object
             example: {"id":"1","email":"user@swt-projekt.de","userRole":"USER"}
-        '409':
-          description: Conflict - Problem with authentication
+        '401':
+          description: Problem with authentication
+      deprecated: false
+  /api/user/changePassword:
+    get:
+      tags:
+        - user-controller
+      summary: Interface to change a password of a user - requires authentication
+      operationId: changePasswordDetails
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            example: {"oldPassword":"Testtest1!","newPassword":"Testtest2!"}
+        '401':
+          description: Problem with authentication
+        '400':
+          description: User is not present
+        '403':
+          description: Permission denied
+
       deprecated: false
